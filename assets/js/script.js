@@ -141,7 +141,7 @@ $("#task-form-modal .btn-primary").click(function () {
 });
 
 $("#modalDueDate").datepicker({
-  minDate: 1
+  minDate: 1,
 });
 
 // task text was clicked
@@ -195,7 +195,7 @@ $(".list-group").on("click", "span", function () {
     onClose: function () {
       // when calendar is closed, force a "change" event on the 'dateInput'
       $(this).trigger("change");
-    }
+    },
   });
 
   // automatically bring up the calendar
@@ -236,24 +236,29 @@ $("#remove-tasks").on("click", function () {
 
 var auditTask = function (taskEl) {
   // to ensure element is getting to the function
-  // get date from task element 
+  // get date from task element
   var date = $(taskEl).find("span").text().trim();
 
-  // convert to moment object at 5:00pm 
+  // convert to moment object at 5:00pm
   var time = moment(date, "L").set("hour", 17);
-  
-  // remove any old classes from element 
+
+  // remove any old classes from element
   $(taskEl).removeClass("list-group-item-warning list-group-item-danger");
 
   // apply new class if task is near/over due date
   if (moment().isAfter(time)) {
     $(taskEl).addClass("list-group-item-danger");
-  }
-  else if (Math.abs(moment().diff(time, "days")) <= 2) {
+  } else if (Math.abs(moment().diff(time, "days")) <= 2) {
     $(taskEl).addClass("list-group-item-warning");
   }
-
+  console.log(taskEl);
 };
 
 // load tasks for the first time
 loadTasks();
+
+setInterval(function () {
+  $(".card .list-group-item").each(function (index, el) {
+    auditTask(el);
+  });
+}, (1000*60)*30);
